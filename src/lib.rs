@@ -6,3 +6,8 @@
 //! [Nikolai Vazquez]: https://twitter.com/NikolaiVazquez
 
 #![deny(missing_docs)]
+
+mod chroot;
+
+#[doc(inline)]
+pub use self::chroot::Chroot;
