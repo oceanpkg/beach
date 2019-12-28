@@ -86,15 +86,15 @@ impl Chroot {
         self
     }
 
-    /// Returns a `Command` suitable for spawning `command` with `root` as `/`.
+    /// Returns a `Command` suitable for spawning `program` with `root` as `/`.
     #[inline]
-    pub fn command<R, C>(mut self, root: R, command: C) -> Command
+    pub fn command<R, P>(mut self, root: R, program: P) -> Command
     where
         R: AsRef<Path>,
-        C: AsRef<OsStr>,
+        P: AsRef<OsStr>,
     {
         self.0.arg(root.as_ref());
-        self.0.arg(command);
+        self.0.arg(program);
         self.0
     }
 }
