@@ -18,21 +18,29 @@ use std::{
 ///     .arg("/")
 ///     .spawn();
 /// ```
-#[derive(Debug)]
-pub struct Chroot(Command);
+#[derive(Clone, Debug)]
+pub struct Chroot {
+    skip_chdir: bool,
+    user_spec: Option<OsString>,
+    groups: Option<OsString>,
+}
 
 impl Chroot {
     /// Creates an instance suitable for setting up a `Command` to execute a
     /// program through `chroot`.
     #[inline]
-    pub fn new() -> Self {
-        Self(Command::new("chroot"))
+    pub const fn new() -> Self {
+        Self {
+            skip_chdir: false,
+            user_spec: None,
+            groups: None,
+        }
     }
 
     /// Do not change the working directory to `/`.
     #[inline]
     pub fn skip_chdir(mut self) -> Self {
-        self.0.arg("--skip-chdir");
+        self.skip_chdir = true;
         self
     }
 
@@ -43,7 +51,7 @@ impl Chroot {
     {
         let mut user_spec = OsString::from("--userspec=");
         user_spec.push(user);
-        self.0.arg(user_spec);
+        self.user_spec = Some(user_spec);
         self
     }
 
@@ -57,7 +65,7 @@ impl Chroot {
         user_spec.push(user);
         user_spec.push(":");
         user_spec.push(group);
-        self.0.arg(user_spec);
+        self.user_spec = Some(user_spec);
         self
     }
 
@@ -80,21 +88,41 @@ impl Chroot {
                 arg.push(group);
             }
 
-            self.0.arg(arg);
+            self.groups = Some(arg);
         }
 
         self
     }
 
+    // Monomorphized form of `command` to reduce binary size.
+    fn command_impl(&self, root: &OsStr, program: &OsStr) -> Command {
+        let mut command = Command::new("chroot");
+
+        if self.skip_chdir {
+            command.arg("--skip-chdir");
+        }
+
+        if let Some(user_spec) = &self.user_spec {
+            command.arg(user_spec);
+        }
+
+        if let Some(groups) = &self.groups {
+            command.arg(groups);
+        }
+
+        command.arg(root);
+        command.arg(program);
+
+        command
+    }
+
     /// Returns a `Command` suitable for spawning `program` with `root` as `/`.
     #[inline]
-    pub fn command<R, P>(mut self, root: R, program: P) -> Command
+    pub fn command<R, P>(&self, root: R, program: P) -> Command
     where
         R: AsRef<Path>,
         P: AsRef<OsStr>,
     {
-        self.0.arg(root.as_ref());
-        self.0.arg(program);
-        self.0
+        self.command_impl(root.as_ref().as_os_str(), program.as_ref())
     }
 }
