@@ -25,6 +25,13 @@ pub struct Chroot {
     groups: Option<OsString>,
 }
 
+impl Default for Chroot {
+    #[inline]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Chroot {
     /// Creates an instance suitable for setting up a `Command` to execute a
     /// program through `chroot`.
