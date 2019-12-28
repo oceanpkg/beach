@@ -1,6 +1,6 @@
 [package]
 name = "beach"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["The Ocean Project Developers"]
 description = "Sandboxing utilities for Ocean."
 license = "AGPL-3.0-only"
