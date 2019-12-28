@@ -1,8 +1,8 @@
 [package]
 name = "beach"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["The Ocean Project Developers"]
-description = "[WIP] Sandboxing utilities for Ocean."
+description = "Sandboxing utilities for Ocean."
 license = "AGPL-3.0-only"
 homepage = "https://github.com/oceanpkg/beach"
 repository = "https://github.com/oceanpkg/beach"
