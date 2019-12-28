@@ -1,9 +1,6 @@
-//! Sandboxing utilities for Ocean.
+//! Sandboxing utilities for [Ocean].
 //!
-//! This project is a work in progress. If you want to help make this a reality,
-//! contact [Nikolai Vazquez].
-//!
-//! [Nikolai Vazquez]: https://twitter.com/NikolaiVazquez
+//! [Ocean]: https://github.com/oceanpkg/ocean
 
 #![deny(missing_docs)]
 
